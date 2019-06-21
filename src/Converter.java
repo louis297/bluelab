@@ -31,44 +31,35 @@ public class Converter {
      * @param target    The type of target value
      * @return          Target value after conversion
      */
-    public double Convert(double value, String source, String target){
-        try{
-            if(!types.containsKey(source)){
-                throw new ConverterException(String.format("The source type %s cannot be recognised.", source));
-            }
-            if(!types.containsKey(target)){
-                throw new ConverterException(String.format("The target type %s cannot be recognised.", target));
-            }
-        } catch(ConverterException e){
-            e.printStackTrace();
-            System.exit(-1);
+    public double Convert(double value, String source, String target) throws ConverterException {
+
+        if (!types.containsKey(source)) {
+            throw new ConverterException(String.format("The source type %s cannot be recognised.", source));
         }
-        try{
-            if(!types.get(source).equals(types.get(target))){
-                throw new ConverterException(String.format("The source type %s and target type %s are not belonged to the same category.", source, target));
-            }
-        } catch(ConverterException e){
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        // the types are double-checked by the actual converter for safety
-        // add new case for new categories here
-        try{
-            switch(types.get(source)){
-                case "temperature":
-                    return ConvertTemperature(value, source, target);
-                case "volume":
-                    return ConvertVolume(value, source, target);
-                default:
-                    throw new ConverterException(String.format("The category %s cannot be recognised.", types.get(source)));
-            }
-        } catch(ConverterException e){
-            e.printStackTrace();
-            System.exit(-1);
+        if (!types.containsKey(target)) {
+            throw new ConverterException(String.format("The target type %s cannot be recognised.", target));
         }
 
+
+        if (!types.get(source).equals(types.get(target))) {
+            throw new ConverterException(String.format("The source type %s and target type %s are not belonged to the same category.", source, target));
+        }
+
+        // the types are double-checked by the actual converter for safety
+        // add new case for new categories here
+
+        switch (types.get(source)) {
+            case "temperature":
+                return ConvertTemperature(value, source, target);
+            case "volume":
+                return ConvertVolume(value, source, target);
+            default:
+                throw new ConverterException(String.format("The category %s cannot be recognised.", types.get(source)));
+        }
+
+
         // the programme should not reach the placeholder return value
-        return 0.0;
+//        return 0.0;
     }
 
     /**
@@ -81,9 +72,8 @@ public class Converter {
      * @return          Target value after conversion
      */
     private double ConvertTemperature(double value, String source, String target) throws ConverterException {
-        double celValue = 0.0;
-        double targetValue = 0.0;
-
+        double celValue;
+        double targetValue;
         // add new case for new source type for temperature
         switch (source) {
             case "Kelvin": {
@@ -133,8 +123,8 @@ public class Converter {
      * @return          Target value after conversion
      */
     private double ConvertVolume(double value, String source, String target) throws ConverterException {
-        double litreValue = 0.0;
-        double targetValue = 0.0;
+        double litreValue;
+        double targetValue;
 
         // add new case for new source type for volume
         switch (source) {
@@ -179,4 +169,5 @@ public class Converter {
 
 // TODO: Use Spring IoC to isolate the code and type/category data
 // then adding new types will not interfere the source code
+// TODO: Add more exception types for precise error information
 // Sorry it is not do-able as a 1 hour project
